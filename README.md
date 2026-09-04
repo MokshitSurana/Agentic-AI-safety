@@ -20,12 +20,12 @@ direct_command, fake_system, roleplay, authority_urgency, embedded_polite
 
 ## Run it
 ```
-pip install groq
+uv sync
 export GROQ_API_KEY=your_key_here
 
-python run.py                 # mock model (free, validates the pipeline)
-python run.py --groq          # real model (llama-3.3-70b-versatile)
-python run.py --groq --model llama-3.1-8b-instant   # try a weaker model
+uv run python run.py                 # mock model (free, validates the pipeline)
+uv run python run.py --groq          # real model (llama-3.3-70b-versatile)
+uv run python run.py --groq --model llama-3.1-8b-instant   # try a weaker model
 ```
 
 On PowerShell, set the key for the current session with:
@@ -37,14 +37,27 @@ $env:GROQ_API_KEY = "your_key_here"
 Never commit a real API key. Copy `.env.example` to `.env` if your local tooling
 loads environment files; `.env` files are ignored by Git.
 
-Run the regression tests with `python -m unittest`.
+Run the regression tests with `uv run python -m unittest`.
 
 ## Files
 - `injections.py`  - the injection payload techniques
 - `documents.py`   - benign tickets + injection embedding
 - `agent.py`       - the agent's system prompt + action parsing
 - `model.py`       - mock model + Groq call
-- `run.py`         - runs everything, computes ASR, saves results/results.csv
+- `run.py`         - runs everything and saves uniquely named CSV + Markdown reports
+
+## Results
+
+Each run writes two files under `results/` without overwriting earlier experiments:
+
+```text
+<UTC timestamp>_<provider>_<model>_<version>.csv
+<UTC timestamp>_<provider>_<model>_<version>_summary.md
+```
+
+The CSV contains case-level model outputs. The Markdown report contains the overall
+ASR, benign-control false-forward rate, and a per-technique comparison table. Use
+`--output-dir <path>` to save a run somewhere else.
 
 ## Extending this (next steps)
 - Add more injection techniques (draw on a broader jailbreak taxonomy)
@@ -63,8 +76,8 @@ forward to an external address. This is the realistic threat and where models ar
 more likely to break.
 
 ```
-python run.py --groq --version v2          # disguised injections (default)
-python run.py --groq --version v1          # blatant injections (baseline)
+uv run python run.py --groq --version v2   # disguised injections (default)
+uv run python run.py --groq --version v1   # blatant injections (baseline)
 ```
 
 Compare v1 vs v2 ASR: the story is usually "blatant fails, disguised succeeds",
