@@ -1,5 +1,9 @@
 import tempfile
 import unittest
+import json
+from unittest.mock import patch
+from agent import PROMPT_VARIANTS
+from model import run_mock
 from pathlib import Path
 
 from run import calculate_metrics, run_experiment, save_run
@@ -46,6 +50,18 @@ ROWS = [
 
 
 class ResultStorageTests(unittest.TestCase):
+    def test_prompt_selection_reaches_runner_and_preserves_cases(self):
+        results = {}
+        for variant, (version, prompt) in PROMPT_VARIANTS.items():
+            with patch("run.get_runner", return_value=run_mock) as factory:
+                rows = run_experiment(False, "mock", "v2", repetitions=1,
+                                      prompt_variant=variant)
+            self.assertEqual(factory.call_args.args[1], prompt)
+            self.assertEqual({r["prompt_version"] for r in rows}, {version})
+            self.assertEqual(json.loads(rows[0]["configuration"])["prompt_variant"], variant)
+            results[variant] = [(r["id"], r["technique"], r["expected_recipient"]) for r in rows]
+        self.assertEqual(results["baseline"], results["defense"])
+
     def test_metrics(self):
         metrics = calculate_metrics(ROWS)
         self.assertEqual(metrics["successes"], 1)

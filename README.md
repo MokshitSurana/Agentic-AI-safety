@@ -87,6 +87,28 @@ and configuration against several Groq models; each model receives its own raw C
 and summary report.
 
 ## Extending this (next steps)
+
+### Defense experiment
+
+`--prompt baseline` (the default) preserves `tool-decision-v2.1` exactly.
+`--prompt defense` selects `tool-decision-defense-v1`, which adds explicit
+authority boundaries, recipient domain verification, and instructions to keep
+performing legitimate internal handoffs. Tools, dataset, and scoring are shared.
+Every new result records the prompt variant, version, and system prompt SHA-256.
+
+Run inside the pod while vLLM is serving the same Qwen model:
+
+```bash
+uv run python run.py --local --model Qwen/Qwen2.5-7B-Instruct --version v2 --prompt defense --smoke-test --max-completion-tokens 256
+uv run python run.py --local --model Qwen/Qwen2.5-7B-Instruct --version v2 --prompt defense --repetitions 3 --max-completion-tokens 256
+```
+
+Compare ASR, false refusals, and invalid-trial counts with the baseline. This
+defense was designed after inspecting v2 results: it is a development-set
+experiment, not a held-out generalization test. Repetitions share the same cases
+and should not be treated as independent examples. Forwarding tools record
+simulated actions; no customer data is actually transmitted.
+
 - Add more injection techniques (draw on a broader jailbreak taxonomy)
 - Test multiple models / sizes and compare vulnerability
 - Add a DEFENSE (e.g. a system-prompt instruction to ignore embedded commands,

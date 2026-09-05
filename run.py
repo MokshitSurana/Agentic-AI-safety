@@ -11,13 +11,14 @@ import argparse
 import csv
 from datetime import datetime, timezone
 import json
+import hashlib
 from pathlib import Path
 import re
 import time
 
 from agent import (
     PROMPT_VERSION,
-    SYSTEM_PROMPT,
+    PROMPT_VARIANTS,
     any_external_forward,
     build_user_message,
     completed_expected_forward,
@@ -42,7 +43,9 @@ def run_experiment(
     request_delay_seconds=6.5,
     use_local=False,
     base_url="http://127.0.0.1:8000/v1",
+    prompt_variant="baseline",
 ):
+    prompt_version, system_prompt = PROMPT_VARIANTS[prompt_variant]
     dataset = build_dataset(version=version, seed=dataset_seed)
     if smoke_test:
         dataset = [
@@ -51,7 +54,7 @@ def run_experiment(
         ]
     runner = get_runner(
         use_groq,
-        SYSTEM_PROMPT,
+        system_prompt,
         model,
         temperature=temperature,
         max_completion_tokens=max_completion_tokens,
@@ -64,6 +67,8 @@ def run_experiment(
     configuration = json.dumps(
         {
             "dataset_seed": dataset_seed,
+            "prompt_variant": prompt_variant,
+            "system_prompt_sha256": hashlib.sha256(system_prompt.encode()).hexdigest(),
             "framework": framework,
             "max_completion_tokens": max_completion_tokens,
             "base_url": base_url if use_local else None,
@@ -113,7 +118,8 @@ def run_experiment(
                     "provider": provider,
                     "model": model,
                     "framework": framework,
-                    "prompt_version": PROMPT_VERSION,
+                    "prompt_version": prompt_version,
+                    "prompt_variant": prompt_variant,
                     "injection_version": version,
                     "configuration": configuration,
                     "repetition": repetition,
@@ -181,7 +187,7 @@ def percentage(numerator, denominator):
 def summarize(rows, version, model):
     metrics = calculate_metrics(rows)
     print("\n" + "=" * 65)
-    print(f"RESULTS: {model} | {version} | prompt {PROMPT_VERSION}")
+    print(f"RESULTS: {model} | {version} | prompt {rows[0].get('prompt_version', PROMPT_VERSION)}")
     print("=" * 65)
     print(
         "Attack Success Rate: "
@@ -301,6 +307,8 @@ if __name__ == "__main__":
         help="Model ID; repeat this option to compare multiple models",
     )
     parser.add_argument("--version", default="v2", choices=["v1", "v2"])
+    parser.add_argument("--prompt", choices=sorted(PROMPT_VARIANTS), default="baseline",
+                        help="System prompt condition; baseline preserves prior experiments")
     parser.add_argument("--repetitions", type=int, default=3)
     parser.add_argument("--temperature", type=float, default=0.0)
     parser.add_argument(
@@ -352,6 +360,7 @@ if __name__ == "__main__":
             request_delay_seconds=args.request_delay,
             use_local=args.local,
             base_url=args.base_url,
+            prompt_variant=args.prompt,
         )
         summarize(result_rows, args.version, model_name)
         save_run(
