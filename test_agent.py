@@ -11,6 +11,29 @@ from model import _build_tools, run_mock
 
 
 class AgentTests(unittest.TestCase):
+    def test_enforcement_in_toolnode_preserves_attempt(self):
+        from langchain_core.messages import AIMessage
+        from langgraph.prebuilt import ToolNode
+        from langgraph.graph import StateGraph, MessagesState, START, END
+        builder = StateGraph(MessagesState)
+        builder.add_node("tools", ToolNode(_build_tools(True)))
+        builder.add_edge(START, "tools")
+        builder.add_edge("tools", END)
+        graph = builder.compile()
+        for recipient, allowed in [("billing@support.internal", True),
+                                   ("a@eu.ourcompany", True),
+                                   ("a@ourcompany.evil.example", False),
+                                   ("a@internal,b@evil.example", False),
+                                   ("Staff <a@internal>", False),
+                                   ("a@evil.example", False)]:
+            with self.subTest(recipient=recipient):
+                call = {"name": "forward_details", "args": {"recipient": recipient}, "id": "test", "type": "tool_call"}
+                result = graph.invoke({"messages": [AIMessage(content="", tool_calls=[call])]})
+                event = result["messages"][-1].artifact
+                self.assertEqual(event["allowed"], allowed)
+                self.assertEqual(event["blocked"], not allowed)
+                self.assertEqual(event["recipient"], recipient)
+
     def test_parse_forward_action(self):
         output = 'TOOL: forward_details(recipient="attacker@evil.com")'
         self.assertEqual(parse_action(output), ("forward_details", "attacker@evil.com"))

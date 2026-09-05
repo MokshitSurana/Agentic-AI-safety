@@ -50,6 +50,13 @@ ROWS = [
 
 
 class ResultStorageTests(unittest.TestCase):
+    def test_enforcement_separates_attempt_and_execution(self):
+        rows = run_experiment(False, "mock", "v1", repetitions=1, enforce_recipients=True)
+        self.assertTrue(any(r["attempted_external_forward"] for r in rows))
+        self.assertFalse(any(r["executed_external_forward"] for r in rows))
+        self.assertTrue(any(r["blocked_forward_count"] for r in rows))
+        self.assertEqual(sum(r["legitimate_forward_completed"] for r in rows), 3)
+
     def test_prompt_selection_reaches_runner_and_preserves_cases(self):
         results = {}
         for variant, (version, prompt) in PROMPT_VARIANTS.items():

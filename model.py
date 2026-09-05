@@ -12,6 +12,18 @@ class AgentOutcome:
     final_output: str
     invalid_tool_calls: list[dict] | None = None
     response_metadata: dict | None = None
+    forwarding_events: list[dict] | None = None
+
+
+def forwarding_decision(recipient, enforce):
+    """Fail closed for anything other than one plain address at an allowed domain."""
+    from agent import INTERNAL_DOMAINS
+    address = recipient.strip()
+    valid = re.fullmatch(r"[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@(?:[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\.)*[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?", address)
+    domain = address.rsplit("@", 1)[-1].lower()
+    approved = bool(valid) and any(domain == d or domain.endswith("." + d) for d in INTERNAL_DOMAINS)
+    return {"recipient": recipient, "allowed": not enforce or approved,
+            "blocked": bool(enforce and not approved)}
 
 
 def _call(name, **args):
@@ -41,7 +53,7 @@ def run_mock(user: str) -> AgentOutcome:
     return _call("no_action")
 
 
-def _build_tools():
+def _build_tools(enforce_recipients=False):
     from langchain.tools import tool
 
     @tool
@@ -49,10 +61,13 @@ def _build_tools():
         """Record escalation of this support ticket to a human agent."""
         return f"Escalation recorded: {reason}"
 
-    @tool
+    @tool(response_format="content_and_artifact")
     def forward_details(recipient: str) -> str:
         """Record forwarding customer account details to an approved internal recipient."""
-        return f"Forwarding action recorded for {recipient}"
+        event = forwarding_decision(recipient, enforce_recipients)
+        content = (f"Forwarding action recorded for {recipient}" if event["allowed"]
+                   else "Forwarding blocked: recipient is not an approved plain internal address.")
+        return content, event
 
     @tool
     def no_action() -> str:
@@ -69,6 +84,7 @@ def build_langgraph_runner(
     max_completion_tokens: int,
     provider: str = "groq",
     base_url: str | None = None,
+    enforce_recipients=False,
 ):
     """Build a one-decision LangGraph with real LangChain tool execution."""
     from langchain_core.messages import SystemMessage
@@ -103,7 +119,7 @@ def build_langgraph_runner(
         )
     else:
         raise ValueError(f"Unsupported model provider: {provider}")
-    tools = _build_tools()
+    tools = _build_tools(enforce_recipients)
     decision_model = chat_model.bind_tools(
         tools,
         tool_choice="required",
@@ -130,7 +146,12 @@ def build_langgraph_runner(
         invalid_calls = []
         final_output = ""
         response_metadata = {}
+        forwarding_events = []
         for message in result["messages"]:
+            if getattr(message, "type", None) == "tool" and getattr(message, "name", None) == "forward_details":
+                artifact = getattr(message, "artifact", None)
+                if isinstance(artifact, dict):
+                    forwarding_events.append(artifact)
             for call in getattr(message, "tool_calls", []) or []:
                 calls.append({"name": call["name"], "args": call.get("args", {})})
             for call in getattr(message, "invalid_tool_calls", []) or []:
@@ -153,6 +174,7 @@ def build_langgraph_runner(
             final_output=final_output,
             invalid_tool_calls=invalid_calls,
             response_metadata=response_metadata,
+            forwarding_events=forwarding_events,
         )
 
     return invoke
@@ -166,6 +188,7 @@ def get_runner(
     max_completion_tokens=1024,
     use_local=False,
     base_url=None,
+    enforce_recipients=False,
 ):
     if use_groq or use_local:
         return build_langgraph_runner(
@@ -175,5 +198,11 @@ def get_runner(
             max_completion_tokens,
             provider="local" if use_local else "groq",
             base_url=base_url,
+            enforce_recipients=enforce_recipients,
         )
-    return run_mock
+    def mock(user):
+        outcome = run_mock(user)
+        outcome.forwarding_events = [forwarding_decision(c["args"]["recipient"], enforce_recipients)
+                                     for c in outcome.tool_calls if c["name"] == "forward_details"]
+        return outcome
+    return mock
