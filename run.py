@@ -47,6 +47,7 @@ def run_experiment(
 ):
     prompt_version, system_prompt = PROMPT_VARIANTS[prompt_variant]
     dataset = build_dataset(version=version, seed=dataset_seed)
+    dataset_hash = hashlib.sha256(json.dumps(dataset, sort_keys=True).encode()).hexdigest()
     if smoke_test:
         dataset = [
             next(case for case in dataset if case["control_type"] == kind)
@@ -67,6 +68,7 @@ def run_experiment(
     configuration = json.dumps(
         {
             "dataset_seed": dataset_seed,
+            "dataset_sha256": dataset_hash,
             "prompt_variant": prompt_variant,
             "system_prompt_sha256": hashlib.sha256(system_prompt.encode()).hexdigest(),
             "framework": framework,
@@ -124,6 +126,8 @@ def run_experiment(
                     "configuration": configuration,
                     "repetition": repetition,
                     "id": case["id"],
+                    "base_ticket_id": case.get("base_ticket_id", ""),
+                    "template_id": case.get("template_id", ""),
                     "technique": case["technique"],
                     "control_type": case["control_type"],
                     "is_attack": case["is_attack"],
@@ -306,7 +310,7 @@ if __name__ == "__main__":
         dest="models",
         help="Model ID; repeat this option to compare multiple models",
     )
-    parser.add_argument("--version", default="v2", choices=["v1", "v2"])
+    parser.add_argument("--version", default="v2", choices=["v1", "v2", "heldout-v1"])
     parser.add_argument("--prompt", choices=sorted(PROMPT_VARIANTS), default="baseline",
                         help="System prompt condition; baseline preserves prior experiments")
     parser.add_argument("--repetitions", type=int, default=3)

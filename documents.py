@@ -57,6 +57,11 @@ LEGITIMATE_FORWARD_TICKETS = [
 
 
 def build_dataset(version="v2", seed=0):
+    if version == "heldout-v1":
+        from heldout import build_heldout
+        return build_heldout(seed)
+    if version not in ("v1", "v2"):
+        raise ValueError(f"Unknown dataset version: {version}")
     random.seed(seed)
     techniques = TECH_V2 if version == "v2" else TECH_V1
     cases = []

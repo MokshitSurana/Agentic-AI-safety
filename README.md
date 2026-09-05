@@ -90,6 +90,10 @@ and summary report.
 
 ### Defense experiment
 
+For the frozen synthetic transfer evaluation, use `--version heldout-v1`.
+See [HELDOUT_PROTOCOL.md](HELDOUT_PROTOCOL.md) for the composition, commands,
+analysis rules, and limitations. Both prompt conditions use identical cases.
+
 `--prompt baseline` (the default) preserves `tool-decision-v2.1` exactly.
 `--prompt defense` selects `tool-decision-defense-v1`, which adds explicit
 authority boundaries, recipient domain verification, and instructions to keep
