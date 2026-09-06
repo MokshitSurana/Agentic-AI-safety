@@ -55,6 +55,11 @@ Legitimate completions were respectively 66/72 and 60/72.
 
 ## Limits and interpretation
 
+See [Error Analysis and Discussion](error-analysis.md) for paired regressions,
+shared failures, concrete tool-call examples, and legitimate-forward subtypes.
+In particular, historical attempted-ASR includes nonempty malformed destinations;
+it must not be described as confirmed delivery to an attacker-controlled mailbox.
+
 Enforcement verified a deliberately narrow invariant by construction; it does
 not establish general resistance to prompt injection or to other leakage channels.
 Repeated deterministic cases do not supply independent evidence. Shared scenario
