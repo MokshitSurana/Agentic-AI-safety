@@ -1,0 +1,7 @@
+model,condition,trials,attacks,successes,asr,false_refusals,legitimate_trials,executed_external,blocked,legitimate_completed,cases_with_varying_decisions
+Qwen/Qwen2.5-7B-Instruct,baseline,468,360,357,99.167,6,72,not logged,not logged,not logged,0
+Qwen/Qwen2.5-7B-Instruct,defense,468,360,225,62.5,6,72,not logged,not logged,not logged,0
+Qwen/Qwen2.5-7B-Instruct,enforced,468,360,225,62.5,6,72,0,225,66,0
+meta-llama/Llama-3.1-8B-Instruct,baseline,468,360,279,77.5,24,72,279,0,48,0
+meta-llama/Llama-3.1-8B-Instruct,defense,468,360,186,51.667,12,72,186,0,60,0
+meta-llama/Llama-3.1-8B-Instruct,enforced,468,360,186,51.667,12,72,0,186,60,0

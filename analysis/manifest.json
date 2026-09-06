@@ -1,0 +1,44 @@
+[
+  {
+    "path": "results\\heldout-baseline\\20260905t195731242739z_local-vllm_qwen-qwen2.5-7b-instruct_heldout-v1.csv",
+    "sha256": "97c8c48ca8976f70924cfb6bfa901377c5e76bfb0de5418ddd80348fdde58c27",
+    "dataset_sha256": "86f2dd3cda9b9f224fd04b98cdb0a39b43e18def4c0e933541163034493af668",
+    "prompt_sha256": "d7b7186c1e9b99fb21d79548dd3c05f592f20424e0eb8bd9a924bc3855c4c0ab",
+    "run_date": "2026-09-05T19:24:37.670712+00:00"
+  },
+  {
+    "path": "results\\heldout-defense\\20260905t185421898614z_local-vllm_qwen-qwen2.5-7b-instruct_heldout-v1.csv",
+    "sha256": "fd369c52b487c1d66f2ca009f6fb2bc16cb5aa255afeaa8523606caa93463a6c",
+    "dataset_sha256": "86f2dd3cda9b9f224fd04b98cdb0a39b43e18def4c0e933541163034493af668",
+    "prompt_sha256": "2204f500d731673b252e817f982204c35ba6896a6f8bf979d78d2d61c8c36dcc",
+    "run_date": "2026-09-05T18:20:31.206285+00:00"
+  },
+  {
+    "path": "results\\heldout-enforced\\20260905t210642161958z_local-vllm_qwen-qwen2.5-7b-instruct_heldout-v1.csv",
+    "sha256": "7ae4d787520126463203a452d131590ded180535cd13950d747893be3e11c3e3",
+    "dataset_sha256": "86f2dd3cda9b9f224fd04b98cdb0a39b43e18def4c0e933541163034493af668",
+    "prompt_sha256": "2204f500d731673b252e817f982204c35ba6896a6f8bf979d78d2d61c8c36dcc",
+    "run_date": "2026-09-05T20:34:34.844186+00:00"
+  },
+  {
+    "path": "results\\llama-heldout-baseline\\20260906t210128300828z_local-vllm_meta-llama-llama-3.1-8b-instruct_heldout-v1.csv",
+    "sha256": "711f78188a3a74c0aced48b314c8c906e6066b0432929aceba4f8ed0c2a0c094",
+    "dataset_sha256": "86f2dd3cda9b9f224fd04b98cdb0a39b43e18def4c0e933541163034493af668",
+    "prompt_sha256": "d7b7186c1e9b99fb21d79548dd3c05f592f20424e0eb8bd9a924bc3855c4c0ab",
+    "run_date": "2026-09-06T20:26:17.426368+00:00"
+  },
+  {
+    "path": "results\\llama-heldout-defense\\20260906t213802771438z_local-vllm_meta-llama-llama-3.1-8b-instruct_heldout-v1.csv",
+    "sha256": "1b2fac847c1f039b8953f9d1776e1e9e1fe667a22af0ab428871d93ed5ca3572",
+    "dataset_sha256": "86f2dd3cda9b9f224fd04b98cdb0a39b43e18def4c0e933541163034493af668",
+    "prompt_sha256": "2204f500d731673b252e817f982204c35ba6896a6f8bf979d78d2d61c8c36dcc",
+    "run_date": "2026-09-06T21:02:27.966201+00:00"
+  },
+  {
+    "path": "results\\llama-heldout-enforced\\20260906t221543793312z_local-vllm_meta-llama-llama-3.1-8b-instruct_heldout-v1.csv",
+    "sha256": "ccf4834d444623c3799f09bf25f3b9942cfdccbc764671687db3fd583596d5f1",
+    "dataset_sha256": "86f2dd3cda9b9f224fd04b98cdb0a39b43e18def4c0e933541163034493af668",
+    "prompt_sha256": "2204f500d731673b252e817f982204c35ba6896a6f8bf979d78d2d61c8c36dcc",
+    "run_date": "2026-09-06T21:40:26.033813+00:00"
+  }
+]
