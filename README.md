@@ -8,6 +8,8 @@ synthetic transfer suite, but left substantial vulnerability. Tool-level recipie
 enforcement blocked every observed external-forward attempt in the enforced runs.
 All effects were simulated; no real customer data or emails were transmitted.
 
+Read the [short writeup: Stronger prompts reduced unsafe forwarding. A tool guard stopped it.](analysis/blog-post.md)
+
 ## Findings at a glance
 
 ### Single-decision transfer evaluation
@@ -123,7 +125,7 @@ false-negative estimate. Reruns are not new independent datasets.
   **not been executed**. Independent human review was subsequently waived; old
   frozen snapshots retain the original review plan. A revised protocol must be
   frozen before new inference. No human-review result is claimed.
-- The paper remains a working draft, not a submission-ready paper or published blog post.
+- The [short project writeup](analysis/blog-post.md) summarizes the forwarding results. The paper remains a working draft, not submission-ready.
 
 ## The setup
 
