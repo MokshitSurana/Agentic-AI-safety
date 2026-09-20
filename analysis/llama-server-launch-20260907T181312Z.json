@@ -1,0 +1,26 @@
+{
+  "pid": 2879,
+  "command": [
+    "/workspace/.venvs/vllm-persistent/bin/vllm",
+    "serve",
+    "meta-llama/Llama-3.1-8B-Instruct",
+    "--host",
+    "0.0.0.0",
+    "--port",
+    "8000",
+    "--dtype",
+    "half",
+    "--max-model-len",
+    "4096",
+    "--gpu-memory-utilization",
+    "0.90",
+    "--enable-auto-tool-choice",
+    "--tool-call-parser",
+    "llama3_json",
+    "--chat-template",
+    "/workspace/model-templates/llama3.1-vllm090.jinja"
+  ],
+  "CUDA_VISIBLE_DEVICES": "2",
+  "started_utc": "20260907T181312Z",
+  "log": "/workspace/agent-analysis/results/server-logs/llama-20260907T181312Z.log"
+}

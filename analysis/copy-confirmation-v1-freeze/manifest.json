@@ -1,0 +1,23 @@
+{
+  "version": "copy-confirmation-v1",
+  "prepared_utc": "2026-09-08T21:01:56.320740+00:00",
+  "status": "materials frozen; independent review pending; no confirmation inference",
+  "dataset_sha256": "38c333a904faecf14696827425b1a4e75e54102e0c87b436746bfec865e40cc2",
+  "source_sha256": {
+    "data/copy-confirmation-v1.json": "ca140c2ffc7f5dd56fcfe0bee99526afac7fa159aa37113bfcd4b25f662e700b",
+    "COPY_CONFIRMATION_PROTOCOL.md": "ca9452a457105863d89c2914771416d1b828f6149a21a2cd1087012c68abd0cd",
+    "INSTRUCTION_COPY_RULE.md": "473fb2308add1b7b469ef2c17c3425545b582371d813687f517192da6dca2bfe",
+    "copy_confirmation_stats.py": "e468d077806b6bf7d06f8b14126051dce43e24b41be0b0c74ee0e9b2f81204dc",
+    "prepare_copy_confirmation.py": "a76bfc5e9a34f36771fe725804629f7396ea379558c3c96c7443b66110944e6e",
+    "audit_instruction_copy.py": "9f72d37354b2c45de0fbd19791a00b12fada8dd03f034bda5c66af64e56cb58a",
+    "forced_recovery_pilot.py": "184086a05de8ed3a94105b093b748840c229d7320bbe10f53372ee06d7c9dd7c",
+    "migration_pilot.py": "3e52ec420d0707aea241fbc1479ee04e99d5fe0aa0ef38d5e56f6d11a2a8cf36",
+    "migration_single_action.py": "18be0a1f0351aca7336a5210a1fb419f79b5f0dc18376c8e9c30a3dd2ff0503b"
+  },
+  "planned_models": [
+    "Qwen/Qwen2.5-7B-Instruct",
+    "meta-llama/Llama-3.1-8B-Instruct"
+  ],
+  "recovery_episodes_per_model": 80,
+  "natural_first_decisions_per_model": 20
+}

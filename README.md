@@ -61,6 +61,18 @@ Run the regression tests with `uv run python -m unittest`.
 
 ## Results
 
+Completed analyses are available in [the held-out audit](analysis/report.md),
+[the two-model migration pilot](analysis/migration-two-model-pilot.md), and
+[the exploratory instruction-copy audit](analysis/instruction-copy-findings.md).
+The fresh confirmation dataset is prepared, but its planned model runs have not
+been performed. Frozen snapshots retain their historical protocol text; they are
+not evidence that proposed follow-up experiments or human review took place.
+
+The repository preserves failed/smoke runs as well as completed experiments.
+Consult each run's configuration, invalid-trial counts and protocol before using
+its numbers. Mock runs are not model evidence; repeated runs are not independent
+new datasets. Synthetic tool execution is not actual external data transmission.
+
 Each run writes two files under `results/` without overwriting earlier experiments:
 
 ```text
@@ -85,6 +97,27 @@ adjust this with `--request-delay` if your account has different limits.
 The default is three repetitions per case. Repeat `--model` to run the same dataset
 and configuration against several Groq models; each model receives its own raw CSV
 and summary report.
+
+## Post-denial migration pilot (separate experiment)
+
+`migration_pilot.py` adds a bounded LangGraph continuation loop with real
+LangChain tool calls and entirely simulated effects. It compares generic versus
+explicit authorization feedback from an identical first proposal. Internal
+escalation stays internal; a separate customer-update tool models a public sink.
+See [MIGRATION_PROTOCOL.md](MIGRATION_PROTOCOL.md) for the frozen pilot prediction,
+five conditions, scoring, exact-token limitations, and full-run commands.
+
+```bash
+uv run python -m unittest -v test_migration_pilot
+uv run python migration_pilot.py --mock --smoke-test
+uv run python migration_pilot.py --local --model Qwen/Qwen2.5-7B-Instruct --smoke-test
+```
+
+Use the exact model ID currently served by your local vLLM endpoint. The smoke
+test runs 15 episodes; the full pilot runs 300 per model (20 workflows, three
+matched variants, five conditions). This is development data, not a held-out
+study. Mock outcomes are scripted and are **not model results**. All results go
+to new timestamped directories; the old experiment and its results are unchanged.
 
 ## Extending this (next steps)
 

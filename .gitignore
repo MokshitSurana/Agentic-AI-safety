@@ -13,3 +13,11 @@ wheels/
 .env
 .env.*
 !.env.example
+
+# Local backup staging, runtime logs, caches and private review administration
+.pod-sync/
+.pytest_cache/
+results/server-logs/
+**/DO-NOT-SHARE-review-key.json
+analysis/check_llama_access.py
+analysis/start_llama_pilot_server.py
