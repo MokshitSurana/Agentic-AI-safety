@@ -1,5 +1,7 @@
 # Indirect Prompt Injection on a Tool-Using Agent
 
+**Write-up:** [Stronger prompts reduced unsafe forwarding. A tool guard stopped it.](https://mokshitsurana.me/blog/stronger-prompts-vs-tool-guard)
+
 A small study testing whether a LangChain/LangGraph tool-using agent can be hijacked by malicious
 instructions hidden inside the data it processes (indirect prompt injection).
 
