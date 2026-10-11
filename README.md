@@ -12,6 +12,22 @@ All effects were simulated; no real customer data or emails were transmitted.
 
 Read the [short writeup: Stronger prompts reduced unsafe forwarding. A tool guard stopped it.](analysis/blog-post.md)
 
+## Inspect implementation
+
+The same transfer suite is available as an [Inspect task](inspect_eval/README.md),
+with the existing prompts, optional recipient enforcement, separate request and
+execution metrics, and offline scorer-parity tests. Install with
+`uv sync --extra inspect --locked`. See the linked guide for a one-command vLLM
+smoke test and full-run commands. Inspect results are kept separate from the
+historical LangGraph runs; matching model outcomes across frameworks is not assumed.
+
+**Validated on Qwen2.5-7B:** 1,404/1,404 trials completed without invalid or
+unscored trials. Unsafe requests were 99.2% with the baseline and 57.5% with the
+stronger prompt; the guarded run blocked all 207 external-forward attempts.
+These are new Inspect results, not replacements for the historical results below.
+See the [validation report and case-level comparison](inspect_eval/VALIDATION.md)
+for logs, denominators and the differences from the original runs.
+
 ## Findings at a glance
 
 ### Single-decision transfer evaluation
